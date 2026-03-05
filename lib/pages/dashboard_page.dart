@@ -90,11 +90,9 @@ class _DashboardPageState extends State<DashboardPage> {
           const SizedBox(height: 24),
           const _ProgressCard(),
           const SizedBox(height: 28),
-          const _SectionTitle(title: 'MORNING'),
-          const SizedBox(height: 12),
-          if (morning.isEmpty)
-            const _EmptySlot()
-          else
+          if (morning.isNotEmpty) ...[
+            const _SectionTitle(title: 'MORNING'),
+            const SizedBox(height: 12),
             ...morning.map((entry) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _AddedMedicationTile(
@@ -129,12 +127,11 @@ class _DashboardPageState extends State<DashboardPage> {
                     },
                   ),
                 )),
-          const SizedBox(height: 24),
-          const _SectionTitle(title: 'AFTERNOON'),
-          const SizedBox(height: 12),
-          if (afternoon.isEmpty)
-            const _EmptySlot()
-          else
+            const SizedBox(height: 24),
+          ],
+          if (afternoon.isNotEmpty) ...[
+            const _SectionTitle(title: 'AFTERNOON'),
+            const SizedBox(height: 12),
             ...afternoon.map((entry) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _AddedMedicationTile(
@@ -169,12 +166,11 @@ class _DashboardPageState extends State<DashboardPage> {
                     },
                   ),
                 )),
-          const SizedBox(height: 24),
-          const _SectionTitle(title: 'EVENING'),
-          const SizedBox(height: 12),
-          if (evening.isEmpty)
-            const _EmptySlot()
-          else
+            const SizedBox(height: 24),
+          ],
+          if (evening.isNotEmpty) ...[
+            const _SectionTitle(title: 'EVENING'),
+            const SizedBox(height: 12),
             ...evening.map((entry) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _AddedMedicationTile(
@@ -209,6 +205,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     },
                   ),
                 )),
+          ],
           const SizedBox(height: 20),
           _AddReminderCard(
             onTap: () {
@@ -444,32 +441,6 @@ class _MedicationCard extends StatelessWidget {
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _EmptySlot extends StatelessWidget {
-  const _EmptySlot();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: const Text(
-        'No reminders for this time',
-        style: TextStyle(color: Color(0xFF9AA1A7), fontWeight: FontWeight.w600),
       ),
     );
   }
