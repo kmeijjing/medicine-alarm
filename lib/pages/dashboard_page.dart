@@ -56,6 +56,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final visibleAdded = _added.where((entry) => entry.days.contains(now.weekday)).toList();
+    final bool hasAlarmsToday = visibleAdded.isNotEmpty;
     final morning = visibleAdded.where((e) => _to24Hour(e) < 12).toList();
     final afternoon = visibleAdded.where((e) => _to24Hour(e) >= 12 && _to24Hour(e) < 17).toList();
     final evening = visibleAdded.where((e) => _to24Hour(e) >= 17).toList();
@@ -88,8 +89,10 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           const _DateRow(),
           const SizedBox(height: 24),
-          const _ProgressCard(),
-          const SizedBox(height: 28),
+          if (hasAlarmsToday) ...[
+            const _ProgressCard(),
+            const SizedBox(height: 28),
+          ],
           if (morning.isNotEmpty) ...[
             const _SectionTitle(title: 'MORNING'),
             const SizedBox(height: 12),
@@ -228,23 +231,34 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
+        type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFF2AD660),
         unselectedItemColor: const Color(0xFF9AA1A7),
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        selectedFontSize: 10,
+        unselectedFontSize: 10,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.calendar_today),
+            icon: Icon(CupertinoIcons.calendar_today, size: 22),
+            activeIcon: Icon(CupertinoIcons.calendar_today, size: 22),
             label: 'TODAY',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.calendar),
+            icon: Icon(CupertinoIcons.calendar, size: 22),
+            activeIcon: Icon(CupertinoIcons.calendar, size: 22),
             label: 'SCHEDULE',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.chart_bar),
+            icon: Icon(CupertinoIcons.chart_bar, size: 22),
+            activeIcon: Icon(CupertinoIcons.chart_bar, size: 22),
             label: 'TRENDS',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.gear),
+            icon: Icon(CupertinoIcons.gear, size: 22),
+            activeIcon: Icon(CupertinoIcons.gear, size: 22),
             label: 'SETTINGS',
           ),
         ],
