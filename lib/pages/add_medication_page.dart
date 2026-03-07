@@ -175,6 +175,7 @@ class MedicationEntry {
   final bool isAm;
   final List<int> days;
   final DateTime createdAt;
+  final DateTime? lastTakenAt;
 
   const MedicationEntry({
     required this.name,
@@ -184,6 +185,7 @@ class MedicationEntry {
     required this.isAm,
     required this.days,
     required this.createdAt,
+    this.lastTakenAt,
   });
 
   Map<String, dynamic> toJson() => {
@@ -194,6 +196,7 @@ class MedicationEntry {
         'isAm': isAm,
         'days': days,
         'createdAt': createdAt.toIso8601String(),
+        'lastTakenAt': lastTakenAt?.toIso8601String(),
       };
 
   factory MedicationEntry.fromJson(Map<String, dynamic> json) {
@@ -207,6 +210,9 @@ class MedicationEntry {
           .map((e) => e as int)
           .toList(),
       createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
+      lastTakenAt: json['lastTakenAt'] != null
+          ? DateTime.tryParse(json['lastTakenAt'] as String)
+          : null,
     );
   }
 
@@ -221,6 +227,29 @@ class MedicationEntry {
     const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     final sorted = days.toList()..sort();
     return sorted.map((d) => labels[(d - 1).clamp(0, 6)]).join(', ');
+  }
+
+  MedicationEntry copyWith({
+    String? name,
+    String? dose,
+    int? hour,
+    int? minute,
+    bool? isAm,
+    List<int>? days,
+    DateTime? createdAt,
+    DateTime? lastTakenAt,
+    bool clearLastTakenAt = false,
+  }) {
+    return MedicationEntry(
+      name: name ?? this.name,
+      dose: dose ?? this.dose,
+      hour: hour ?? this.hour,
+      minute: minute ?? this.minute,
+      isAm: isAm ?? this.isAm,
+      days: days ?? this.days,
+      createdAt: createdAt ?? this.createdAt,
+      lastTakenAt: clearLastTakenAt ? null : (lastTakenAt ?? this.lastTakenAt),
+    );
   }
 }
 

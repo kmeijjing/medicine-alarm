@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'add_medication_page.dart';
+import 'schedule_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -240,6 +241,13 @@ class _DashboardPageState extends State<DashboardPage> {
         unselectedFontSize: 10,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SchedulePage()),
+            );
+          }
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.calendar_today, size: 22),
