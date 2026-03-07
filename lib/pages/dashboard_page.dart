@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'add_medication_page.dart';
 import 'schedule_page.dart';
+import 'trends_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -283,6 +284,11 @@ class _DashboardPageState extends State<DashboardPage> {
           if (index == 1) {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const SchedulePage()),
+            );
+          }
+          if (index == 2) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const TrendsPage()),
             );
           }
         },

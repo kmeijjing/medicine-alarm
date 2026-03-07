@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'add_medication_page.dart';
+import 'trends_page.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -166,6 +167,11 @@ class _SchedulePageState extends State<SchedulePage> {
           if (index == 0) {
             Navigator.of(context).pop();
           }
+          if (index == 2) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const TrendsPage()),
+            );
+          }
         },
         items: const [
           BottomNavigationBarItem(
@@ -300,39 +306,36 @@ class _CalendarDayCell extends StatelessWidget {
     final Color todayBorder = isToday ? const Color(0xFF2AD660) : Colors.transparent;
 
     return Container(
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: todayBorder, width: 1.2),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 28,
-            width: 28,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                CircularProgressIndicator(
-                  value: progress,
-                  strokeWidth: 3,
-                  backgroundColor: const Color(0xFFE2E6E9),
-                  valueColor: AlwaysStoppedAnimation<Color>(ringColor),
+      child: Center(
+        child: SizedBox(
+          height: 22,
+          width: 22,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              CircularProgressIndicator(
+                value: progress,
+                strokeWidth: 2.5,
+                backgroundColor: const Color(0xFFE2E6E9),
+                valueColor: AlwaysStoppedAnimation<Color>(ringColor),
+              ),
+              Text(
+                '${date.day}',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: textColor,
                 ),
-                Text(
-                  '${date.day}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: textColor,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
