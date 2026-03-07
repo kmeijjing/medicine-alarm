@@ -53,6 +53,23 @@ class _DashboardPageState extends State<DashboardPage> {
     return entry.hour % 12 + 12;
   }
 
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  bool _isTakenToday(MedicationEntry entry, DateTime now) {
+    final DateTime? takenAt = entry.lastTakenAt;
+    if (takenAt == null) return false;
+    return _isSameDay(takenAt, now);
+  }
+
+  void _updateEntry(MedicationEntry oldEntry, MedicationEntry newEntry) {
+    final int index = _added.indexOf(oldEntry);
+    if (index == -1) return;
+    setState(() => _added[index] = newEntry);
+    _saveAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -101,6 +118,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _AddedMedicationTile(
                     entry: entry,
+                    isTaken: _isTakenToday(entry, now),
                     onDelete: () {
                       setState(() => _added.remove(entry));
                       _saveAll();
@@ -128,6 +146,12 @@ class _DashboardPageState extends State<DashboardPage> {
                               _saveAll();
                             }
                           });
+                    },
+                    onMarkTaken: (takenAt) {
+                      _updateEntry(entry, entry.copyWith(lastTakenAt: takenAt));
+                    },
+                    onCancelTaken: () {
+                      _updateEntry(entry, entry.copyWith(clearLastTakenAt: true));
                     },
                   ),
                 )),
@@ -140,6 +164,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _AddedMedicationTile(
                     entry: entry,
+                    isTaken: _isTakenToday(entry, now),
                     onDelete: () {
                       setState(() => _added.remove(entry));
                       _saveAll();
@@ -167,6 +192,12 @@ class _DashboardPageState extends State<DashboardPage> {
                               _saveAll();
                             }
                           });
+                    },
+                    onMarkTaken: (takenAt) {
+                      _updateEntry(entry, entry.copyWith(lastTakenAt: takenAt));
+                    },
+                    onCancelTaken: () {
+                      _updateEntry(entry, entry.copyWith(clearLastTakenAt: true));
                     },
                   ),
                 )),
@@ -179,6 +210,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _AddedMedicationTile(
                     entry: entry,
+                    isTaken: _isTakenToday(entry, now),
                     onDelete: () {
                       setState(() => _added.remove(entry));
                       _saveAll();
@@ -206,6 +238,12 @@ class _DashboardPageState extends State<DashboardPage> {
                               _saveAll();
                             }
                           });
+                    },
+                    onMarkTaken: (takenAt) {
+                      _updateEntry(entry, entry.copyWith(lastTakenAt: takenAt));
+                    },
+                    onCancelTaken: () {
+                      _updateEntry(entry, entry.copyWith(clearLastTakenAt: true));
                     },
                   ),
                 )),
@@ -361,6 +399,7 @@ class _MedicationCard extends StatelessWidget {
   final String dose;
   final String action;
   final bool muted;
+  final VoidCallback? onActionTap;
 
   const _MedicationCard({
     required this.status,
@@ -369,6 +408,7 @@ class _MedicationCard extends StatelessWidget {
     required this.dose,
     required this.action,
     this.muted = false,
+    this.onActionTap,
   });
 
   @override
@@ -436,29 +476,37 @@ class _MedicationCard extends StatelessWidget {
             ],
           ),
           if (action == 'check')
-            Container(
-              height: 48,
-              width: 48,
-              decoration: BoxDecoration(
-                color: const Color(0xFFDFF8E8),
-                borderRadius: BorderRadius.circular(24),
+            InkWell(
+              onTap: onActionTap,
+              borderRadius: BorderRadius.circular(24),
+              child: Container(
+                height: 48,
+                width: 48,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDFF8E8),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: const Icon(CupertinoIcons.check_mark, color: Color(0xFF2AD660)),
               ),
-              child: const Icon(CupertinoIcons.check_mark, color: Color(0xFF2AD660)),
             )
           else
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-              decoration: BoxDecoration(
-                color: muted
-                    ? const Color(0xFFF3F4F5)
-                    : const Color(0xFF2AD660),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Text(
-                action,
-                style: TextStyle(
-                  color: muted ? const Color(0xFF8A8F95) : Colors.white,
-                  fontWeight: FontWeight.w700,
+            InkWell(
+              onTap: onActionTap,
+              borderRadius: BorderRadius.circular(14),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                decoration: BoxDecoration(
+                  color: muted
+                      ? const Color(0xFFF3F4F5)
+                      : const Color(0xFF2AD660),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Text(
+                  action,
+                  style: TextStyle(
+                    color: muted ? const Color(0xFF8A8F95) : Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
@@ -472,11 +520,17 @@ class _AddedMedicationTile extends StatefulWidget {
   final MedicationEntry entry;
   final VoidCallback onDelete;
   final VoidCallback onEdit;
+  final bool isTaken;
+  final ValueChanged<DateTime> onMarkTaken;
+  final VoidCallback onCancelTaken;
 
   const _AddedMedicationTile({
     required this.entry,
     required this.onDelete,
     required this.onEdit,
+    required this.isTaken,
+    required this.onMarkTaken,
+    required this.onCancelTaken,
   });
 
   @override
@@ -485,6 +539,14 @@ class _AddedMedicationTile extends StatefulWidget {
 
 class _AddedMedicationTileState extends State<_AddedMedicationTile> {
   double _progress = 0.0;
+
+  void _handleActionTap() {
+    if (widget.isTaken) {
+      widget.onCancelTaken();
+      return;
+    }
+    widget.onMarkTaken(DateTime.now());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -528,11 +590,12 @@ class _AddedMedicationTileState extends State<_AddedMedicationTile> {
               onTap: widget.onEdit,
               borderRadius: BorderRadius.circular(16),
               child: _MedicationCard(
-                status: '',
+                status: widget.isTaken ? 'TAKEN' : '',
                 name: widget.entry.name,
                 time: widget.entry.timeLabel,
                 dose: widget.entry.dose,
-                action: 'Taken',
+                action: widget.isTaken ? 'check' : 'Taken',
+                onActionTap: _handleActionTap,
               ),
             ),
           ),
