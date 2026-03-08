@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'add_medication_page.dart';
 import 'schedule_page.dart';
 import 'trends_page.dart';
+import 'settings_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -289,6 +290,11 @@ class _DashboardPageState extends State<DashboardPage> {
           if (index == 2) {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const TrendsPage()),
+            );
+          }
+          if (index == 3) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SettingsPage()),
             );
           }
         },

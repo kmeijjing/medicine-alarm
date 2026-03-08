@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'add_medication_page.dart';
 import 'dashboard_page.dart';
 import 'schedule_page.dart';
+import 'settings_page.dart';
 
 class TrendsPage extends StatefulWidget {
   const TrendsPage({super.key});
@@ -163,6 +164,11 @@ class _TrendsPageState extends State<TrendsPage> {
           if (index == 1) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const SchedulePage()),
+            );
+          }
+          if (index == 3) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const SettingsPage()),
             );
           }
         },

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'add_medication_page.dart';
 import 'trends_page.dart';
+import 'settings_page.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -15,9 +16,11 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   final List<MedicationEntry> _added = [];
   static const String _storageKey = 'medications';
+  static const String _weekStartKey = 'settings_week_start';
 
   late DateTime _focusedMonth;
   late DateTime _selectedDate;
+  String _weekStart = 'mon';
 
   @override
   void initState() {
@@ -31,6 +34,7 @@ class _SchedulePageState extends State<SchedulePage> {
   Future<void> _loadSaved() async {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getStringList(_storageKey) ?? [];
+    final weekStart = prefs.getString(_weekStartKey) ?? 'mon';
     final loaded = raw
         .map(
           (item) => MedicationEntry.fromJson(
@@ -43,6 +47,7 @@ class _SchedulePageState extends State<SchedulePage> {
       _added
         ..clear()
         ..addAll(loaded);
+      _weekStart = weekStart;
     });
   }
 
@@ -76,9 +81,11 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
     final DateTime firstDay = DateTime(_focusedMonth.year, _focusedMonth.month, 1);
-    final int startOffset = firstDay.weekday - 1;
-    final int daysInMonth = DateUtils.getDaysInMonth(_focusedMonth.year, _focusedMonth.month);
+    final bool weekStartsOnSunday = _weekStart == 'sun';
+    final int startOffset = weekStartsOnSunday ? firstDay.weekday % 7 : firstDay.weekday - 1;
     final DateTime gridStart = firstDay.subtract(Duration(days: startOffset));
+    final List<String> weekdayLabels =
+        weekStartsOnSunday ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F9F6),
@@ -112,7 +119,7 @@ class _SchedulePageState extends State<SchedulePage> {
             onNext: () => _changeMonth(1),
           ),
           const SizedBox(height: 16),
-          const _WeekdayHeader(),
+          _WeekdayHeader(labels: weekdayLabels),
           const SizedBox(height: 8),
           GridView.builder(
             shrinkWrap: true,
@@ -170,6 +177,11 @@ class _SchedulePageState extends State<SchedulePage> {
           if (index == 2) {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const TrendsPage()),
+            );
+          }
+          if (index == 3) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SettingsPage()),
             );
           }
         },
@@ -256,11 +268,12 @@ class _MonthHeader extends StatelessWidget {
 }
 
 class _WeekdayHeader extends StatelessWidget {
-  const _WeekdayHeader();
+  final List<String> labels;
+
+  const _WeekdayHeader({required this.labels});
 
   @override
   Widget build(BuildContext context) {
-    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: labels
