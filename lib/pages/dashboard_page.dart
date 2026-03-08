@@ -80,14 +80,21 @@ class _DashboardPageState extends State<DashboardPage> {
     final morning = visibleAdded.where((e) => _to24Hour(e) < 12).toList();
     final afternoon = visibleAdded.where((e) => _to24Hour(e) >= 12 && _to24Hour(e) < 17).toList();
     final evening = visibleAdded.where((e) => _to24Hour(e) >= 17).toList();
+    final String greeting = () {
+      final int hour = now.hour;
+      if (hour < 12) return 'Good Morning';
+      if (hour < 18) return 'Good Afternoon';
+      return 'Good Evening';
+    }();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F9F6),
       appBar: AppBar(
         backgroundColor: const Color(0xFFF6F9F6),
         elevation: 0,
-        title: const Text(
-          'Good Morning',
+        automaticallyImplyLeading: false,
+        title: Text(
+          greeting,
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w700,

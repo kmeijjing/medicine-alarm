@@ -89,27 +89,6 @@ class _SchedulePageState extends State<SchedulePage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F9F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF6F9F6),
-        elevation: 0,
-        title: const Text(
-          'Schedule',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF1F1F1F),
-          ),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(CupertinoIcons.calendar, color: Color(0xFF1F1F1F)),
-            ),
-          ),
-        ],
-      ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [

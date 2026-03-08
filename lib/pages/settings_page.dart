@@ -41,19 +41,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F9F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF6F9F6),
-        elevation: 0,
-        title: const Text(
-          'Settings',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF1F1F1F),
-          ),
-        ),
-        centerTitle: true,
-      ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [

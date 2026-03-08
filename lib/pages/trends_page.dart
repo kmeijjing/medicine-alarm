@@ -80,10 +80,7 @@ class _TrendsPageState extends State<TrendsPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFF6F9F6),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(CupertinoIcons.xmark, color: Color(0xFF1F1F1F)),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        automaticallyImplyLeading: false,
         title: const Text(
           'Weekly Summary',
           style: TextStyle(
@@ -118,23 +115,6 @@ class _TrendsPageState extends State<TrendsPage> {
             accent: Color(0xFFF1F4F7),
           ),
           const SizedBox(height: 18),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2AD660),
-              foregroundColor: const Color(0xFF0F1A12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-            ),
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const DashboardPage()),
-                (route) => false,
-              );
-            },
-            child: const Text('Back to Dashboard'),
-          ),
-          const SizedBox(height: 8),
           const Center(
             child: Text(
               'Swipe up for detailed history',
